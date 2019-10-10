@@ -1,0 +1,577 @@
+package oca.project;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+
+
+
+/**
+ *
+ * Form that allows to display personal details and pay salaried and contractor employees
+ */
+public class PersonalDataForm extends javax.swing.JFrame {
+    
+    
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+    //Declared
+    private ArrayList<Person> person = new ArrayList();
+    private ArrayList<PayrollReportItem> payrollReportList = new ArrayList();;
+    DefaultComboBoxModel model = new DefaultComboBoxModel();
+    
+    //setting up date format
+
+    //creating new list to hold the report items
+    
+
+      
+
+    /**
+     * Creates new form DataEntryForm
+     * @param person
+     */
+    public PersonalDataForm(ArrayList<Person> person) {
+        initComponents();
+        this.person = person;
+        getPersonalData();
+        
+    }
+    
+    
+    /**
+     * Populating combo box 
+     */
+    public final void populateComboName(){
+        for (Person p: getPerson()){
+            model.addElement(p);
+        }
+        cboName.setModel(model);
+    }
+    
+    //method that allows to display personal details based on the selection made in the cboName
+    public final void getPersonalData() {
+         populateComboName();
+         showDOB();
+         isContractor();
+    }
+    
+    /**
+     * Shows date of birth 
+     * Of each selected Subordinate
+     */
+    
+    public final void showDOB(){
+        Person selectedPerson = (Person)cboName.getSelectedItem();
+        txtDOB.setText(selectedPerson.getDOB().toString());
+        
+    }
+    
+    
+    
+    /**
+     * Method to 
+     */
+    
+    /**
+     * Shows start date 
+     * if subordinate is part of Salaried Subordinates
+     * else: its a contractor and shows date started payed
+     */
+    public void isContractor(){
+        Person selectedPerson = (Person)cboName.getSelectedItem();
+        if (!selectedPerson.isIsContractor()){
+            ISalariedPerson selectedSalariedPerson = (ISalariedPerson)selectedPerson;
+            //System.out.println("Salary");
+            lstContractor.setSelectedIndex(1);
+            txtStartDate.show();
+            txtStartDate.setText(selectedSalariedPerson.getStartOfWorkDate().toString());
+            cboTimePeriod.setSelectedItem(selectedSalariedPerson.getTimePeriod().toString());
+            panContractor.hide();
+            panSalariedPerson.show();
+            txtBaseSalary.setText(String.valueOf(selectedSalariedPerson.getBaseSalary()));
+        }else{
+            //System.out.println("Per hour");
+            IContractor selectedContractor = (IContractor)selectedPerson;
+            lstContractor.setSelectedIndex(0);
+            txtStartDate.hide();
+            cboTimePeriod.setSelectedItem("MONTHLY");
+            panContractor.show();
+            panSalariedPerson.hide();
+            txtHourlyRate.setText(String.valueOf(selectedContractor.getHourlyRate()));
+        }
+        
+    }
+    
+    
+    /**
+     * Add Payment to Contractors method
+     */
+    public void addPayment(){
+        if (txtStartOfPayPeriod.getText().equals("") || txtHoursOfWork.getText().equals("") ){
+            JOptionPane.showMessageDialog(this, "Please Dont leave the Date Started or Hours Text Field Blank", "Anouncement", WIDTH, null);
+        }else{
+            IContractor contractorPerson = (IContractor)cboName.getSelectedItem();
+            double salary;
+            try {
+                salary = contractorPerson.calculatePay(formatter.parse(txtStartOfPayPeriod.getText()), Double.parseDouble(txtHoursOfWork.getText()));
+                System.out.println(salary);
+                PayrollReportItem reportItem = new PayrollReportItem((Person)cboName.getSelectedItem(), salary, formatter.parse(txtStartOfPayPeriod.getText()), TimePeriods.MONTHLY);
+                System.out.println("Passed!");
+                payrollReportList.add(reportItem);
+                
+                MainForm.addToPayroll(reportItem);
+                JOptionPane.showMessageDialog(this, "Contract Payment of $" + salary + " was added", "Announcement", WIDTH);
+            } catch (ParseException pe) {
+                JOptionPane.showMessageDialog(this, "Please Enter the date Correctly in dd/MM/yyyy Format.\r\n", "Announcement", WIDTH);
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(this, "Please Enter Correct Number of Hours.\r\n", "Announcement", WIDTH);
+            } catch (Exception ex) {
+                Logger.getLogger(PersonalDataForm.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+        }
+    }
+    
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        msgMessage = new javax.swing.JOptionPane();
+        lblName = new javax.swing.JLabel();
+        cboName = new javax.swing.JComboBox();
+        lblDOB = new javax.swing.JLabel();
+        txtDOB = new javax.swing.JTextField();
+        lblStartDate = new javax.swing.JLabel();
+        txtStartDate = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lstContractor = new javax.swing.JList();
+        panContractor = new javax.swing.JPanel();
+        lblContractor = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txtStartOfPayPeriod = new javax.swing.JTextField();
+        txtHoursOfWork = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtHourlyRate = new javax.swing.JTextField();
+        btnAddContract = new javax.swing.JButton();
+        panSalariedPerson = new javax.swing.JPanel();
+        txtBaseSalary = new javax.swing.JTextField();
+        lblSalaried = new javax.swing.JLabel();
+        lblBaseSalary1 = new javax.swing.JLabel();
+        cboTimePeriod = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        lblAssign = new javax.swing.JLabel();
+        btnBack = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(153, 153, 153));
+        setResizable(false);
+
+        lblName.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        lblName.setText("Name:");
+
+        cboName.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cboName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboName.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cboNameItemStateChanged(evt);
+            }
+        });
+        cboName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboNameActionPerformed(evt);
+            }
+        });
+
+        lblDOB.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        lblDOB.setText("Date of Birth:");
+
+        txtDOB.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        txtDOB.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtDOB.setEnabled(false);
+
+        lblStartDate.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        lblStartDate.setText("Start Date:");
+
+        txtStartDate.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        txtStartDate.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtStartDate.setEnabled(false);
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel1.setText("Contractor:");
+
+        lstContractor.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        lstContractor.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Yes", "No" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        lstContractor.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        lstContractor.setEnabled(false);
+        lstContractor.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                lstContractorValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(lstContractor);
+
+        panContractor.setPreferredSize(new java.awt.Dimension(327, 202));
+
+        lblContractor.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        lblContractor.setText("Contractor Worker");
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel2.setText("Start date of pay period");
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel4.setText("Hours of Work:");
+
+        txtStartOfPayPeriod.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+
+        txtHoursOfWork.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel7.setText("Hourly rate: ");
+
+        txtHourlyRate.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        txtHourlyRate.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtHourlyRate.setEnabled(false);
+
+        btnAddContract.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        btnAddContract.setText("Add");
+        btnAddContract.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddContractActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panContractorLayout = new javax.swing.GroupLayout(panContractor);
+        panContractor.setLayout(panContractorLayout);
+        panContractorLayout.setHorizontalGroup(
+            panContractorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panContractorLayout.createSequentialGroup()
+                .addComponent(lblContractor)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(panContractorLayout.createSequentialGroup()
+                .addGroup(panContractorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addGroup(panContractorLayout.createSequentialGroup()
+                        .addGroup(panContractorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel2))
+                        .addGap(28, 28, 28)
+                        .addGroup(panContractorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtStartOfPayPeriod, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtHoursOfWork, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtHourlyRate, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnAddContract))
+                .addContainerGap(33, Short.MAX_VALUE))
+        );
+        panContractorLayout.setVerticalGroup(
+            panContractorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panContractorLayout.createSequentialGroup()
+                .addComponent(lblContractor)
+                .addGap(18, 18, 18)
+                .addGroup(panContractorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panContractorLayout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel7)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAddContract)
+                        .addGap(27, 27, 27))
+                    .addGroup(panContractorLayout.createSequentialGroup()
+                        .addComponent(txtStartOfPayPeriod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(panContractorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtHoursOfWork, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addComponent(txtHourlyRate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(78, Short.MAX_VALUE))))
+        );
+
+        txtBaseSalary.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        txtBaseSalary.setDisabledTextColor(new java.awt.Color(51, 51, 51));
+        txtBaseSalary.setEnabled(false);
+
+        lblSalaried.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        lblSalaried.setText("Salaried Worker");
+
+        lblBaseSalary1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        lblBaseSalary1.setText("Base Salary: ");
+
+        javax.swing.GroupLayout panSalariedPersonLayout = new javax.swing.GroupLayout(panSalariedPerson);
+        panSalariedPerson.setLayout(panSalariedPersonLayout);
+        panSalariedPersonLayout.setHorizontalGroup(
+            panSalariedPersonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panSalariedPersonLayout.createSequentialGroup()
+                .addComponent(lblSalaried)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(panSalariedPersonLayout.createSequentialGroup()
+                .addComponent(lblBaseSalary1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(txtBaseSalary, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+        panSalariedPersonLayout.setVerticalGroup(
+            panSalariedPersonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panSalariedPersonLayout.createSequentialGroup()
+                .addComponent(lblSalaried)
+                .addGap(18, 18, 18)
+                .addGroup(panSalariedPersonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBaseSalary, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblBaseSalary1))
+                .addContainerGap(148, Short.MAX_VALUE))
+        );
+
+        cboTimePeriod.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cboTimePeriod.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "WEEKLY", "FORTNIGHTLY", "MONTHLY" }));
+        cboTimePeriod.setEnabled(false);
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel3.setText("Time Period:");
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText(" Personal Information");
+
+        lblAssign.setBackground(new java.awt.Color(102, 102, 255));
+        lblAssign.setFont(new java.awt.Font("Lucida Sans", 1, 36)); // NOI18N
+        lblAssign.setForeground(new java.awt.Color(102, 102, 102));
+        lblAssign.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblAssign.setText("Best IT Paytoll");
+        lblAssign.setAutoscrolls(true);
+        lblAssign.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        btnBack.setBackground(new java.awt.Color(153, 255, 153));
+        btnBack.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblAssign, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(32, 32, 32)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(lblName, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(lblDOB)
+                                                .addComponent(lblStartDate)
+                                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(cboName, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(txtStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(txtDOB, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(cboTimePeriod, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(panSalariedPerson, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(panContractor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 770, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(lblAssign, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel6)
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(63, 63, 63)
+                                .addComponent(txtStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cboName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtDOB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(29, 29, 29)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblName)
+                                .addGap(55, 55, 55)
+                                .addComponent(lblStartDate))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(42, 42, 42)
+                                .addComponent(lblDOB)))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1)))
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(cboTimePeriod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panSalariedPerson, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panContractor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(2, 2, 2)
+                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    //When user selects the name, the personal data is updated
+    private void cboNameItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboNameItemStateChanged
+
+    }//GEN-LAST:event_cboNameItemStateChanged
+
+    //displays only contractor or salaried worker information based on the selection made in the contractor list
+    private void lstContractorValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstContractorValueChanged
+
+    }//GEN-LAST:event_lstContractorValueChanged
+
+    //event handler that allow to assign salary to contractor
+    private void btnAddContractActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddContractActionPerformed
+        //When Add Button is clicked.
+        addPayment();
+    }//GEN-LAST:event_btnAddContractActionPerformed
+    //event handler for the Back button that closes the current form and displays the main form 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        MainForm form = new MainForm(getPerson());
+        form.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void cboNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboNameActionPerformed
+        getPersonalData();
+    }//GEN-LAST:event_cboNameActionPerformed
+
+    
+    //creates the model to populate cboName with the list of people working in the company
+
+    
+    /**
+     * @param args the command line arguments
+     */
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(PersonalDataForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(PersonalDataForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(PersonalDataForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(PersonalDataForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new PersonalDataForm().setVisible(true);
+//            }
+//        });
+//    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddContract;
+    private javax.swing.JButton btnBack;
+    private javax.swing.JComboBox cboName;
+    private javax.swing.JComboBox cboTimePeriod;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblAssign;
+    private javax.swing.JLabel lblBaseSalary1;
+    private javax.swing.JLabel lblContractor;
+    private javax.swing.JLabel lblDOB;
+    private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblSalaried;
+    private javax.swing.JLabel lblStartDate;
+    private javax.swing.JList lstContractor;
+    private javax.swing.JOptionPane msgMessage;
+    private javax.swing.JPanel panContractor;
+    private javax.swing.JPanel panSalariedPerson;
+    private javax.swing.JTextField txtBaseSalary;
+    private javax.swing.JTextField txtDOB;
+    private javax.swing.JTextField txtHourlyRate;
+    private javax.swing.JTextField txtHoursOfWork;
+    private javax.swing.JTextField txtStartDate;
+    private javax.swing.JTextField txtStartOfPayPeriod;
+    // End of variables declaration//GEN-END:variables
+
+    /**
+     * @return the person
+     */
+    public ArrayList<Person> getPerson() {
+        return person;
+    }
+
+    /**
+     * @param person the person to set
+     */
+    public void setPerson(ArrayList<Person> person) {
+        this.person = person;
+    }
+
+    /**
+     * @return the payrollReportList
+     */
+    public ArrayList<PayrollReportItem> getPayrollReportList() {
+        return payrollReportList;
+    }
+
+    /**
+     * @param payrollReportList the payrollReportList to set
+     */
+    public void setPayrollReportList(ArrayList<PayrollReportItem> payrollReportList) {
+        this.payrollReportList = payrollReportList;
+    }
+
+
+}
